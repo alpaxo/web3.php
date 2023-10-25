@@ -5,32 +5,21 @@ namespace Test\Unit;
 use Test\TestCase;
 use Web3\Formatters\OptionalQuantityFormatter;
 
+/**
+ * @coversDefaultClass \Web3\Formatters\OptionalQuantityFormatter
+ */
 class OptionalQuantityFormatterTest extends TestCase
 {
-    /**
-     * formatter
-     * 
-     * @var \Web3\Formatters\OptionalQuantityFormatter
-     */
-    protected $formatter;
+    protected OptionalQuantityFormatter $formatter;
 
-    /**
-     * setUp
-     * 
-     * @return void
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
+
         $this->formatter = new OptionalQuantityFormatter;
     }
 
-    /**
-     * testFormat
-     * 
-     * @return void
-     */
-    public function testFormat()
+    public function testFormat(): void
     {
         $formatter = $this->formatter;
 

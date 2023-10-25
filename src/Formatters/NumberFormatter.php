@@ -11,9 +11,7 @@
 
 namespace Web3\Formatters;
 
-use InvalidArgumentException;
 use Web3\Utils;
-use Web3\Formatters\IFormatter;
 
 class NumberFormatter implements IFormatter
 {
@@ -23,12 +21,11 @@ class NumberFormatter implements IFormatter
      * @param mixed $value
      * @return int
      */
-    public static function format($value)
+    public static function format($value): int
     {
         $value = Utils::toString($value);
         $bn = Utils::toBn($value);
-        $int = (int) $bn->toString();
 
-        return $int;
+        return (int) $bn->toString();
     }
 }

@@ -2,25 +2,18 @@
 
 namespace Test\Unit;
 
-use RuntimeException;
 use Test\TestCase;
-use phpseclib\Math\BigInteger as BigNumber;
+use phpseclib3\Math\BigInteger as BigNumber;
+use Web3\Eth;
 
+/**
+ * @coversDefaultClass \Web3\Eth
+ */
 class EthBatchTest extends TestCase
 {
-    /**
-     * eth
-     * 
-     * @var \Web3\Eth
-     */
-    protected $eth;
+    protected Eth $eth;
 
-    /**
-     * setUp
-     * 
-     * @return void
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -28,11 +21,9 @@ class EthBatchTest extends TestCase
     }
 
     /**
-     * testBatch
-     * 
-     * @return void
+     * @covers ::batch
      */
-    public function testBatch()
+    public function testBatch(): void
     {
         $eth = $this->eth;
 
@@ -42,7 +33,7 @@ class EthBatchTest extends TestCase
 
         $eth->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->fail('Got error!');
+                $this->fail('Got error!');
             }
             $this->assertTrue($data[0] instanceof BigNumber);
             $this->assertTrue($data[1] !== null);

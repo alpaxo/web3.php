@@ -11,25 +11,16 @@
 
 namespace Web3\Formatters;
 
-use InvalidArgumentException;
-use Web3\Utils;
-use Web3\Formatters\IFormatter;
 use Web3\Validators\TagValidator;
-use Web3\Formatters\QuantityFormatter;
 
 class OptionalQuantityFormatter implements IFormatter
 {
-    /**
-     * format
-     * 
-     * @param mixed $value
-     * @return string
-     */
-    public static function format($value)
+    public static function format(mixed $value): string
     {
         if (TagValidator::validate($value)) {
             return $value;
         }
+
         return QuantityFormatter::format($value);
     }
 }

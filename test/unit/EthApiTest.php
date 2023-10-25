@@ -1,56 +1,38 @@
 <?php
-
+declare(strict_types=1);
 namespace Test\Unit;
 
 use RuntimeException;
 use InvalidArgumentException;
 use Test\TestCase;
-use phpseclib\Math\BigInteger as BigNumber;
+use phpseclib3\Math\BigInteger as BigNumber;
+use Web3\Eth;
 
 class EthApiTest extends TestCase
 {
-    /**
-     * eth
-     * 
-     * @var \Web3\Eth
-     */
-    protected $eth;
+    protected Eth $eth;
 
-    /**
-     * setUp
-     * 
-     * @return void
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->eth = $this->web3->eth;
     }
 
-    /**
-     * testProtocolVersion
-     * 
-     * @return void
-     */    
-    public function testProtocolVersion()
+    public function testProtocolVersion(): void
     {
         $eth = $this->eth;
 
         $eth->protocolVersion(function ($err, $version) {
             if ($err !== null) {
-                return $this->fail($err->getMessage());
+                $this->fail($err->getMessage());
             }
+
             $this->assertTrue($version instanceof BigNumber);
         });
     }
 
-    /**
-     * testSyncing
-     * 
-     * @return void
-     */    
-    public function testSyncing()
+    public function testSyncing(): void
     {
         $eth = $this->eth;
 
@@ -58,6 +40,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
+
             // due to the result might be object or bool, only test is null
             $this->assertTrue($syncing !== null);
         });

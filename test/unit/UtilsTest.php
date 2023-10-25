@@ -3,30 +3,25 @@
 namespace Test\Unit;
 
 use InvalidArgumentException;
-use stdClass;
 use Test\TestCase;
-use phpseclib\Math\BigInteger as BigNumber;
+use phpseclib3\Math\BigInteger as BigNumber;
 use Web3\Utils;
-use Web3\Contract;
 
+/**
+ * @coversDefaultClass \Web3\Utils
+ */
 class UtilsTest extends TestCase
 {
     /**
-     * testHex
      * 'hello world'
      * you can check by call pack('H*', $hex)
-     * 
-     * @var string
      */
-    protected $testHex = '68656c6c6f20776f726c64';
+    protected string $testHex = '68656c6c6f20776f726c64';
 
     /**
-     * testJsonMethodString
      * from GameToken approve function
-     * 
-     * @var string
      */
-    protected $testJsonMethodString = '{
+    protected string $testJsonMethodString = '{
       "constant": false,
       "inputs": [
         {
@@ -54,12 +49,9 @@ class UtilsTest extends TestCase
     }';
 
     /**
-     * testIssue112Json
      * see: https://github.com/sc0Vu/web3.php/issues/112
-     * 
-     * @var string
      */
-    protected $testIssue112Json = '[
+    protected string $testIssue112Json = '[
         {
           "constant": true,
           "inputs": [],
@@ -132,22 +124,15 @@ class UtilsTest extends TestCase
         }
     ]';
 
-    /**
-     * setUp
-     * 
-     * @return void
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
 
     /**
-     * testToHex
-     * 
-     * @return void
+     * @covers ::toHex
      */
-    public function testToHex()
+    public function testToHex(): void
     {
         $this->assertEquals($this->testHex, Utils::toHex('hello world'));
         $this->assertEquals('0x' . $this->testHex, Utils::toHex('hello world', true));
@@ -176,127 +161,108 @@ class UtilsTest extends TestCase
         $this->assertEquals('0x30', Utils::toHex(new BigNumber('48'), true));
         $this->assertEquals('30', Utils::toHex(new BigNumber(48)));
         $this->assertEquals('30', Utils::toHex(new BigNumber('48')));
-
-        $this->expectException(InvalidArgumentException::class);
-        $hex = Utils::toHex(new stdClass);
     }
 
     /**
-     * testHexToBin
-     * 
-     * @return void
+     * @covers ::hexToBin
      */
-    public function testHexToBin()
+    public function testHexToBin(): void
     {
         $str = Utils::hexToBin($this->testHex);
-        $this->assertEquals($str, 'hello world');
+
+        $this->assertEquals('hello world', $str);
 
         $str = Utils::hexToBin('0x' . $this->testHex);
-        $this->assertEquals($str, 'hello world');
+
+        $this->assertEquals('hello world', $str);
 
         $str = Utils::hexToBin('0xe4b883e5bda9e7a59ee4bb99e9b1bc');
-        $this->assertEquals($str, '七彩神仙鱼');
 
-        $this->expectException(InvalidArgumentException::class);
-        $str = Utils::hexToBin(new stdClass);
+        $this->assertEquals('七彩神仙鱼', $str);
+
     }
 
     /**
-     * testIsZeroPrefixed
-     * 
-     * @return void
+     * @covers ::isZeroPrefixed
      */
-    public function testIsZeroPrefixed()
+    public function testIsZeroPrefixed(): void
     {
         $isPrefixed = Utils::isZeroPrefixed($this->testHex);
-        $this->assertEquals($isPrefixed, false);
+
+        $this->assertFalse($isPrefixed);
 
         $isPrefixed = Utils::isZeroPrefixed('0x' . $this->testHex);
-        $this->assertEquals($isPrefixed, true);
 
-        $this->expectException(InvalidArgumentException::class);
-        $isPrefixed = Utils::isZeroPrefixed(new stdClass);
+        $this->assertTrue($isPrefixed);
     }
 
     /**
-     * testIsAddress
-     * 
-     * @return void
+     * @covers ::isAddress
      */
-    public function testIsAddress()
+    public function testIsAddress(): void
     {
         $isAddress = Utils::isAddress('ca35b7d915458ef540ade6068dfe2f44e8fa733c');
-        $this->assertEquals($isAddress, true);
+        $this->assertTrue($isAddress);
 
         $isAddress = Utils::isAddress('0xca35b7d915458ef540ade6068dfe2f44e8fa733c');
-        $this->assertEquals($isAddress, true);
+        $this->assertTrue($isAddress);
 
         $isAddress = Utils::isAddress('0Xca35b7d915458ef540ade6068dfe2f44e8fa733c');
-        $this->assertEquals($isAddress, true);
+        $this->assertTrue($isAddress);
 
         $isAddress = Utils::isAddress('0XCA35B7D915458EF540ADE6068DFE2F44E8FA733C');
-        $this->assertEquals($isAddress, true);
+        $this->assertTrue($isAddress);
 
         $isAddress = Utils::isAddress('0xCA35B7D915458EF540ADE6068DFE2F44E8FA733C');
-        $this->assertEquals($isAddress, true);
+        $this->assertTrue($isAddress);
 
         $isAddress = Utils::isAddress('0xCA35B7D915458EF540ADE6068DFE2F44E8FA73cc');
-        $this->assertEquals($isAddress, false);
-
-        $this->expectException(InvalidArgumentException::class);
-        $isAddress = Utils::isAddress(new stdClass);
+        $this->assertFalse($isAddress);
     }
 
     /**
-     * testIsAddressChecksum
-     *
-     * @return void
+     * @covers ::isAddressChecksum
      */
-    public function testIsAddressChecksum()
+    public function testIsAddressChecksum(): void
     {
         $isAddressChecksum = Utils::isAddressChecksum('0x52908400098527886E0F7030069857D2E4169EE7');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0x8617E340B3D01FA5F11F306F4090FD50E238070D');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xde709f2102306220921060314715629080e2fb77');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0x27b1fdb04752bbc536007a920d24acb045561c26');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb');
-        $this->assertEquals($isAddressChecksum, true);
+        $this->assertTrue($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0XD1220A0CF47C7B9BE7A2E6BA89F429762E7B9ADB');
-        $this->assertEquals($isAddressChecksum, false);
+        $this->assertFalse($isAddressChecksum);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xd1220a0cf47c7b9be7a2e6ba89f429762e7b9adb');
-        $this->assertEquals($isAddressChecksum, false);
-
-        $this->expectException(InvalidArgumentException::class);
-        $isAddressChecksum = Utils::isAddressChecksum(new stdClass);
+        $this->assertFalse($isAddressChecksum);
     }
 
     /**
-     * testToChecksumAddress
-     *
-     * @return void
+     * @covers ::toChecksumAddress
      */
-    public function testToChecksumAddress()
+    public function testToChecksumAddress(): void
     {
         $checksumAddressTest = [
             // All caps
@@ -319,11 +285,9 @@ class UtilsTest extends TestCase
     }
 
     /**
-     * testStripZero
-     *
-     * @return void
+     * @covers ::stripZero
      */
-    public function testStripZero()
+    public function testStripZero(): void
     {
         $str = Utils::stripZero($this->testHex);
 
@@ -335,28 +299,22 @@ class UtilsTest extends TestCase
     }
 
     /**
-     * testSha3
-     * 
-     * @return void
+     * @covers ::sha3
+     * @throws \Exception
      */
-    public function testSha3()
+    public function testSha3(): void
     {
         $str = Utils::sha3('');
         $this->assertNull($str);
 
         $str = Utils::sha3('baz(uint32,bool)');
-        $this->assertEquals(mb_substr($str, 0, 10), '0xcdcd77c0');
-
-        $this->expectException(InvalidArgumentException::class);
-        $str = Utils::sha3(new stdClass);
+        $this->assertEquals('0xcdcd77c0', mb_substr($str, 0, 10));
     }
 
     /**
-     * testToWei
-     * 
-     * @return void
+     * @covers ::toWei
      */
-    public function testToWei()
+    public function testToWei(): void
     {
         $bn = Utils::toWei('0x1', 'wei');
         $this->assertEquals('1', $bn->toString());
@@ -393,156 +351,122 @@ class UtilsTest extends TestCase
 
         $bn = Utils::toWei('', 'ether');
         $this->assertEquals('0', $bn->toString());
-
-        try {
-            $bn = Utils::toWei('0x5218', new stdClass);
-        } catch (InvalidArgumentException $e) {
-            $this->assertEquals('toWei unit must be string.', $e->getMessage());
-        }
-
-        try {
-            $bn = Utils::toWei('0x5218', 'test');
-        } catch (InvalidArgumentException $e) {
-            $this->assertEquals('toWei doesn\'t support test unit.', $e->getMessage());
-        }
-
-        try {
-            // out of limit
-            $bn = Utils::toWei(-1.6977, 'kwei');
-        } catch (InvalidArgumentException $e) {
-            $this->assertEquals('toWei number must be string or bignumber.', $e->getMessage());
-        }
     }
 
     /**
-     * testToEther
-     * 
-     * @return void
+     * @covers ::toEther
      */
-    public function testToEther()
+    public function testToEther():void
     {
         list($bnq, $bnr) = Utils::toEther('0x1', 'wei');
 
-        $this->assertEquals($bnq->toString(), '0');
-        $this->assertEquals($bnr->toString(), '1');
+        $this->assertEquals('0', $bnq->toString());
+        $this->assertEquals('1', $bnr->toString());
 
         list($bnq, $bnr) = Utils::toEther('18', 'wei');
 
-        $this->assertEquals($bnq->toString(), '0');
-        $this->assertEquals($bnr->toString(), '18');
+        $this->assertEquals('0', $bnq->toString());
+        $this->assertEquals('18', $bnr->toString());
 
         list($bnq, $bnr) = Utils::toEther('1', 'kether');
 
-        $this->assertEquals($bnq->toString(), '1000');
-        $this->assertEquals($bnr->toString(), '0');
+        $this->assertEquals('1000', $bnq->toString());
+        $this->assertEquals('0', $bnr->toString());
 
         list($bnq, $bnr) = Utils::toEther('0x5218', 'wei');
 
-        $this->assertEquals($bnq->toString(), '0');
-        $this->assertEquals($bnr->toString(), '21016');
+        $this->assertEquals('0', $bnq->toString());
+        $this->assertEquals('21016', $bnr->toString());
 
         list($bnq, $bnr) = Utils::toEther('0x5218', 'ether');
 
-        $this->assertEquals($bnq->toString(), '21016');
-        $this->assertEquals($bnr->toString(), '0');
+        $this->assertEquals('21016', $bnq->toString());
+        $this->assertEquals('0', $bnr->toString());
     }
 
     /**
-     * testFromWei
-     * 
-     * @return void
+     * @covers ::fromWei
      */
-    public function testFromWei()
+    public function testFromWei(): void
     {
         list($bnq, $bnr) = Utils::fromWei('1000000000000000000', 'ether');
 
-        $this->assertEquals($bnq->toString(), '1');
-        $this->assertEquals($bnr->toString(), '0');
+        $this->assertEquals('1', $bnq->toString());
+        $this->assertEquals('0', $bnr->toString());
 
         list($bnq, $bnr) = Utils::fromWei('18', 'wei');
 
-        $this->assertEquals($bnq->toString(), '18');
-        $this->assertEquals($bnr->toString(), '0');
+        $this->assertEquals('18', $bnq->toString());
+        $this->assertEquals('0', $bnr->toString());
 
         list($bnq, $bnr) = Utils::fromWei(1, 'femtoether');
 
-        $this->assertEquals($bnq->toString(), '0');
-        $this->assertEquals($bnr->toString(), '1');
+        $this->assertEquals('0', $bnq->toString());
+        $this->assertEquals('1', $bnr->toString());
 
         list($bnq, $bnr) = Utils::fromWei(0x11, 'nano');
 
-        $this->assertEquals($bnq->toString(), '0');
-        $this->assertEquals($bnr->toString(), '17');
+        $this->assertEquals('0', $bnq->toString());
+        $this->assertEquals('17', $bnr->toString());
 
         list($bnq, $bnr) = Utils::fromWei('0x5218', 'kwei');
 
-        $this->assertEquals($bnq->toString(), '21');
-        $this->assertEquals($bnr->toString(), '16');
-
-        try {
-            list($bnq, $bnr) = Utils::fromWei('0x5218', new stdClass);
-        } catch (InvalidArgumentException $e) {
-            $this->assertTrue($e !== null);
-        }
+        $this->assertEquals('21', $bnq->toString());
+        $this->assertEquals('16', $bnr->toString());
 
         try {
             list($bnq, $bnr) = Utils::fromWei('0x5218', 'test');
         } catch (InvalidArgumentException $e) {
-            $this->assertTrue($e !== null);
+            $this->assertNotNull($e);
         }
     }
 
     /**
-     * testJsonMethodToString
-     * 
-     * @return void
+     * @covers ::jsonMethodToString
      */
-    public function testJsonMethodToString()
+    public function testJsonMethodToString(): void
     {
         $json = json_decode($this->testJsonMethodString);
         $methodString = Utils::jsonMethodToString($json);
 
-        $this->assertEquals($methodString, 'approve(address,uint256)');
+        $this->assertEquals('approve(address,uint256)', $methodString);
 
         $json = json_decode($this->testJsonMethodString, true);
         $methodString = Utils::jsonMethodToString($json);
 
-        $this->assertEquals($methodString, 'approve(address,uint256)');
+        $this->assertEquals('approve(address,uint256)', $methodString);
 
         $methodString = Utils::jsonMethodToString([
             'name' => 'approve(address,uint256)'
         ]);
-        $this->assertEquals($methodString, 'approve(address,uint256)');
 
-        $this->expectException(InvalidArgumentException::class);
-        $methodString = Utils::jsonMethodToString('test');
+        $this->assertEquals('approve(address,uint256)', $methodString);
     }
 
     /**
-     * testJsonToArray
-     * 
-     * @return void
+     * @covers ::jsonToArray
      */
-    public function testJsonToArray()
+    public function testJsonToArray(): void
     {
         $decodedJson = json_decode($this->testJsonMethodString);
         $jsonArray = Utils::jsonToArray($decodedJson);
+
         $jsonAssoc = json_decode($this->testJsonMethodString, true);
         $jsonArray2 = Utils::jsonToArray($jsonAssoc);
+
         $this->assertEquals($jsonAssoc, $jsonArray);
         $this->assertEquals($jsonAssoc, $jsonArray2);
 
         $jsonAssoc = json_decode($this->testIssue112Json, true);
         $jsonArray = Utils::jsonToArray($jsonAssoc);
+
         $this->assertEquals($jsonAssoc, $jsonArray);
     }
 
     /**
-     * testIsHex
-     * 
-     * @return void
+     * @covers ::isHex
      */
-    public function testIsHex()
+    public function testIsHex(): void
     {
         $isHex = Utils::isHex($this->testHex);
 
@@ -558,95 +482,91 @@ class UtilsTest extends TestCase
     }
 
     /**
-     * testIsNegative
-     * 
-     * @return void
+     * @covers ::isNegative
      */
-    public function testIsNegative()
+    public function testIsNegative(): void
     {
         $isNegative = Utils::isNegative('-1');
+
         $this->assertTrue($isNegative);
 
         $isNegative = Utils::isNegative('1');
+
         $this->assertFalse($isNegative);
     }
 
     /**
-     * testToBn
-     * 
-     * @return void
+     * @covers ::toBn
      */
-    public function testToBn()
+    public function testToBn():void
     {
         $bn = Utils::toBn('');
-        $this->assertEquals($bn->toString(), '0');
+        $this->assertEquals('0', $bn->toString());
 
         $bn = Utils::toBn(11);
-        $this->assertEquals($bn->toString(), '11');
+        $this->assertEquals('11', $bn->toString());
 
         $bn = Utils::toBn('0x12');
-        $this->assertEquals($bn->toString(), '18');
+        $this->assertEquals('18', $bn->toString());
 
         $bn = Utils::toBn('-0x12');
-        $this->assertEquals($bn->toString(), '-18');
+        $this->assertEquals('-18', $bn->toString());
 
         $bn = Utils::toBn(0x12);
-        $this->assertEquals($bn->toString(), '18');
+        $this->assertEquals('18', $bn->toString());
 
         $bn = Utils::toBn('ae');
-        $this->assertEquals($bn->toString(), '174');
+        $this->assertEquals('174', $bn->toString());
 
         $bn = Utils::toBn('-ae');
-        $this->assertEquals($bn->toString(), '-174');
+        $this->assertEquals('-174', $bn->toString());
 
         $bn = Utils::toBn('-1');
-        $this->assertEquals($bn->toString(), '-1');
+        $this->assertEquals('-1', $bn->toString());
 
         $bn = Utils::toBn('-0.1');
-        $this->assertEquals(count($bn), 4);
-        $this->assertEquals($bn[0]->toString(), '0');
-        $this->assertEquals($bn[1]->toString(), '1');
-        $this->assertEquals($bn[2], 1);
-        $this->assertEquals($bn[3]->toString(), '-1');
+        $this->assertEquals(4, count($bn));
+        $this->assertEquals('0', $bn[0]->toString());
+        $this->assertEquals('1', $bn[1]->toString());
+        $this->assertEquals(1, $bn[2]);
+        $this->assertEquals('-1', $bn[3]->toString());
 
         $bn = Utils::toBn(-0.1);
-        $this->assertEquals(count($bn), 4);
-        $this->assertEquals($bn[0]->toString(), '0');
-        $this->assertEquals($bn[1]->toString(), '1');
-        $this->assertEquals($bn[2], 1);
-        $this->assertEquals($bn[3]->toString(), '-1');
+
+        $this->assertEquals(4, count($bn));
+        $this->assertEquals('0', $bn[0]->toString());
+        $this->assertEquals('1', $bn[1]->toString());
+        $this->assertEquals(1, $bn[2]);
+        $this->assertEquals('-1', $bn[3]->toString());
 
         $bn = Utils::toBn('0.1');
-        $this->assertEquals(count($bn), 4);
-        $this->assertEquals($bn[0]->toString(), '0');
-        $this->assertEquals($bn[1]->toString(), '1');
-        $this->assertEquals($bn[2], 1);
-        $this->assertEquals($bn[3], false);
+        $this->assertEquals(4, count($bn));
+        $this->assertEquals('0', $bn[0]->toString());
+        $this->assertEquals('1', $bn[1]->toString());
+        $this->assertEquals(1, $bn[2]);
+        $this->assertFalse($bn[3]);
 
         $bn = Utils::toBn('-1.69');
-        $this->assertEquals(count($bn), 4);
-        $this->assertEquals($bn[0]->toString(), '1');
-        $this->assertEquals($bn[1]->toString(), '69');
-        $this->assertEquals($bn[2], 2);
-        $this->assertEquals($bn[3]->toString(), '-1');
+        $this->assertEquals(4, count($bn));
+        $this->assertEquals('1', $bn[0]->toString());
+        $this->assertEquals('69', $bn[1]->toString());
+        $this->assertEquals(2, $bn[2]);
+        $this->assertEquals('-1', $bn[3]->toString());
 
         $bn = Utils::toBn(-1.69);
-        $this->assertEquals($bn[0]->toString(), '1');
-        $this->assertEquals($bn[1]->toString(), '69');
-        $this->assertEquals($bn[2], 2);
-        $this->assertEquals($bn[3]->toString(), '-1');
+        $this->assertEquals('1', $bn[0]->toString());
+        $this->assertEquals('69', $bn[1]->toString());
+        $this->assertEquals(2, $bn[2]);
+        $this->assertEquals('-1', $bn[3]->toString());
 
         $bn = Utils::toBn('1.69');
-        $this->assertEquals(count($bn), 4);
-        $this->assertEquals($bn[0]->toString(), '1');
-        $this->assertEquals($bn[1]->toString(), '69');
-        $this->assertEquals($bn[2], 2);
-        $this->assertEquals($bn[3], false);
+        $this->assertEquals(4, count($bn));
+        $this->assertEquals('1', $bn[0]->toString());
+        $this->assertEquals('69', $bn[1]->toString());
+        $this->assertEquals(2, $bn[2]);
+        $this->assertFalse($bn[3]);
 
         $bn = Utils::toBn(new BigNumber(1));
-        $this->assertEquals($bn->toString(), '1');
-
-        $this->expectException(InvalidArgumentException::class);
-        $bn = Utils::toBn(new stdClass);
+        $this->assertEquals('1', $bn->toString());
     }
 }

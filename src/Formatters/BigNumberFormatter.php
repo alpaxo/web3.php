@@ -11,23 +11,15 @@
 
 namespace Web3\Formatters;
 
-use InvalidArgumentException;
+use phpseclib3\Math\BigInteger as BigNumber;
 use Web3\Utils;
-use Web3\Formatters\IFormatter;
 
 class BigNumberFormatter implements IFormatter
 {
-    /**
-     * format
-     * 
-     * @param mixed $value
-     * @return string
-     */
-    public static function format($value)
+    public static function format($value): array|BigNumber
     {
         $value = Utils::toString($value);
-        $bn = Utils::toBn($value);
 
-        return $bn;
+        return Utils::toBn($value);
     }
 }

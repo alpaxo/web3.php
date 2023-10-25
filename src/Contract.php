@@ -14,10 +14,7 @@ namespace Web3;
 use InvalidArgumentException;
 use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
-use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
-use Web3\Utils;
-use Web3\Eth;
 use Web3\Contracts\Ethabi;
 use Web3\Contracts\Types\Address;
 use Web3\Contracts\Types\Boolean;
@@ -35,75 +32,25 @@ use Web3\Formatters\AddressFormatter;
 
 class Contract
 {
-    /**
-     * provider
-     *
-     * @var \Web3\Providers\Provider
-     */
-    protected $provider;
+    protected Provider $provider;
 
-    /**
-     * abi
-     * 
-     * @var array
-     */
-    protected $abi;
+    protected array $abi;
 
-    /**
-     * constructor
-     * 
-     * @var array
-     */
-    protected $constructor = [];
+    protected array $constructor = [];
 
-    /**
-     * functions
-     * 
-     * @var array
-     */
-    protected $functions = [];
+    protected array $functions = [];
 
-    /**
-     * events
-     * 
-     * @var array
-     */
-    protected $events = [];
+    protected array $events = [];
 
-    /**
-     * toAddress
-     * 
-     * @var string
-     */
-    protected $toAddress;
+    protected string $toAddress;
 
-    /**
-     * bytecode
-     * 
-     * @var string
-     */
-    protected $bytecode;
+    protected string $bytecode;
 
-    /**
-     * eth
-     * 
-     * @var \Web3\Eth
-     */
-    protected $eth;
+    protected Eth $eth;
 
-    /**
-     * ethabi
-     * 
-     * @var \Web3\Contracts\Ethabi
-     */
-    protected $ethabi;
+    protected Ethabi $ethabi;
 
-    /**
-     * defaultBlock
-     *
-     * @var mixed
-     */
-    protected $defaultBlock;
+    protected mixed $defaultBlock;
 
     /**
      * construct
@@ -195,6 +142,7 @@ class Contract
         if (method_exists($this, $method)) {
             return call_user_func_array([$this, $method], []);
         }
+
         return false;
     }
 
@@ -324,11 +272,6 @@ class Contract
         return $this->abi($abi);
     }
 
-    /**
-     * getEthabi
-     * 
-     * @return array
-     */
     public function getEthabi()
     {
         return $this->ethabi;

@@ -275,13 +275,7 @@ class Web3
         return $this->utils;
     }
 
-    /**
-     * batch
-     * 
-     * @param bool $status
-     * @return void
-     */
-    public function batch($status)
+    public function batch(bool $status): void
     {
         $status = is_bool($status);
 
