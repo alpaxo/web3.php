@@ -13,7 +13,7 @@
          "ext-mbstring": "*",
         "guzzlehttp/guzzle": "^7.0",
         "kornrunner/keccak": "~1.0",
-        "phpseclib/phpseclib": "~2.0.11"
+        "phpseclib/phpseclib": "~2.0.11||^3.0.2"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0"
